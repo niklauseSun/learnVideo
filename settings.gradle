@@ -1,2 +1,3 @@
 rootProject.name='VApp'
-include ':app'
+include ':app', ':jsbridge', ':core'
+

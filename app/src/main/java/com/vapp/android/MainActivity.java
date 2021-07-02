@@ -1,7 +1,8 @@
 package com.vapp.android;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,15 +15,25 @@ import android.widget.Toast;
 
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
+import com.quick.core.baseapp.baseactivity.FrmBaseActivity;
+import com.quick.jsbridge.bean.QuickBean;
+import com.quick.jsbridge.view.QuickWebLoader;
 import com.vapp.android.webView.VWebView;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
-public class MainActivity extends AppCompatActivity {
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.EasyPermissions;
+
+public class MainActivity extends FrmBaseActivity implements EasyPermissions.PermissionCallbacks {
+
+    private static final int REQUEST_CODE_QRCODE_PERMISSIONS = 1;
 
     private Button inputButton = null;
     private Button defaultButton = null;
     private Button prevButton = null;
+    private Button scanButton = null;
 
     private Context mContext = this;
 
@@ -34,9 +45,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        pageControl.getNbBar().hide();
+
         inputButton = findViewById(R.id.inputButton);
         defaultButton = findViewById(R.id.defaultButton);
         prevButton = findViewById(R.id.prevButton);
+        scanButton = findViewById(R.id.scan_button);
 
         inputButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,6 +75,16 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     Toast.makeText(mContext, "未输入过网址！",Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+        scanButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mintent = new Intent(MainActivity.this, QuickWebLoader.class);
+                QuickBean bean = new QuickBean("https://www.baidu.com");
+                mintent.putExtra("bean", bean);
+                startActivity(mintent);
             }
         });
     }
@@ -134,4 +158,31 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        requestCodeQRCodePermissions();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+    }
+
+    @AfterPermissionGranted(REQUEST_CODE_QRCODE_PERMISSIONS)
+    private void requestCodeQRCodePermissions() {
+        String [] perms = {Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE};
+        if (!EasyPermissions.hasPermissions(this, perms)) {
+            EasyPermissions.requestPermissions(this, "扫描二维码需要打开相机和散光灯的权限", REQUEST_CODE_QRCODE_PERMISSIONS, perms);
+        }
+    }
 }
