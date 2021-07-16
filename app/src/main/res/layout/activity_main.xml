@@ -41,4 +41,23 @@
         android:text="扫码"
         app:layout_constraintTop_toBottomOf="@+id/prevButton"
         tools:layout_editor_absoluteX="162dp" />
+
+    <Button
+        android:id="@+id/goToCall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="声网测试"
+        app:layout_constraintTop_toBottomOf="@+id/scan_button"
+        tools:layout_editor_absoluteX="161dp" />
+
+    <Button android:id="@+id/goToMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        tools:layout_editor_absoluteX="161dp"
+        android:text="即时通信测试"
+        app:layout_constraintTop_toBottomOf="@+id/goToCall"/>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

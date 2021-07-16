@@ -47,6 +47,8 @@ public interface IQuickFragment {
      */
     ProgressBar getProgressBar();
 
+    QuickFragment getQuickFragment();
+
     /**
      * 设置页面参数
      *

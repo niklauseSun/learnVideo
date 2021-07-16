@@ -5,14 +5,21 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.donkingliang.imageselector.utils.ImageSelector;
 import com.quick.core.baseapp.baseactivity.FrmBaseFragment;
 import com.quick.core.baseapp.baseactivity.control.PageControl;
 import com.quick.core.ui.app.IPageControl;
+import com.quick.core.util.common.JsonUtil;
 import com.quick.jsbridge.bean.QuickBean;
 import com.quick.jsbridge.control.AutoCallbackDefined;
 import com.quick.jsbridge.control.WebloaderControl;
 import com.quick.jsbridge.view.webview.QuickWebView;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -131,10 +138,40 @@ public class QuickFragment extends FrmBaseFragment implements IQuickFragment {
         return pb;
     }
 
+    @Override
+    public QuickFragment getQuickFragment() {
+        return this;
+    }
 
+    public void startCamera(JSONObject param) {
+        Boolean crop = "1".equals(param.optString("corp", "0"));
+        ImageSelector.builder()
+                .setCrop(crop) // 设置是否使用图片剪切功能。
+                .setCropRatio(1.0f) // 图片剪切的宽高比,默认1.0f。宽固定为手机屏幕的宽。
+                .onlyTakePhoto(true)  // 仅拍照，不打开相册
+                .start(this, ImageSelector.RESULT_CODE);
+    }
+
+    public void selectImage(JSONObject param) {
+        int photoCount = param.optInt("photoCount", 9);
+        boolean showCamera = "1".equals(param.optString("showCamera", "0"));
+        boolean previewEnabled = "1".equals(param.optString("previewEnabled", "1"));
+        String[] items = new String[]{};
+        JSONArray itemsJsonObject = param.optJSONArray("selectedPhotos");
+        items = JsonUtil.parseJSONArray(itemsJsonObject, items);
+        ArrayList<String> selectedPhotos = new ArrayList<>(Arrays.asList(items));
+        ImageSelector.builder()
+                .useCamera(showCamera) // 设置是否使用拍照
+                .setSelected(selectedPhotos)
+                .setSingle(false)  //设置是否单选
+                .setMaxSelectCount(photoCount) // 图片的最大选择数量，小于等于0时，不限数量。
+                .canPreview(previewEnabled) //是否可以预览图片，默认为true
+                .start(this, ImageSelector.RESULT_CODE); // 打开相册
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         control.onResult(requestCode, resultCode, data);
     }
 

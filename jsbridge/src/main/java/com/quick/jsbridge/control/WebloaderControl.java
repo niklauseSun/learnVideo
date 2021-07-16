@@ -2,8 +2,10 @@ package com.quick.jsbridge.control;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import android.webkit.DownloadListener;
 
+import com.donkingliang.imageselector.utils.ImageSelector;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.quick.core.ui.widget.SegActionCallBack;
@@ -19,6 +21,7 @@ import com.quick.jsbridge.api.UtilApi;
 import com.quick.jsbridge.bean.QuickBean;
 import com.quick.jsbridge.bridge.JSBridge;
 import com.quick.jsbridge.view.IQuickFragment;
+import com.quick.jsbridge.view.QuickFragment;
 import com.quick.jsbridge.view.webview.IActivityResult;
 import com.quick.jsbridge.view.webview.QuickWebChromeClient;
 import com.quick.jsbridge.view.webview.QuickWebView;
@@ -78,6 +81,7 @@ public class WebloaderControl implements IActivityResult, SegActionCallBack, Dow
     private PageLoad pageLoad;
 
     private PhotoSelector photoSelector;
+
 
     public WebloaderControl(IQuickFragment quickFragment, QuickBean bean, QuickWebView wv) {
         this.quickFragment = quickFragment;
@@ -260,6 +264,15 @@ public class WebloaderControl implements IActivityResult, SegActionCallBack, Dow
                 ArrayList<String> photos = null;
                 if (data != null) {
                     photos = data.getStringArrayListExtra(PhotoPicker.KEY_SELECTED_PHOTOS);
+                }
+                object.put(RESULT_DATA, photos == null ? "" : photos);
+                autoCallbackEvent.onChoosePic(object);
+
+            } else if (requestCode == ImageSelector.RESULT_CODE) {
+                //选择或预览图片回传值
+                ArrayList<String> photos = null;
+                if (data != null) {
+                    photos = data.getStringArrayListExtra(ImageSelector.SELECT_RESULT);
                 }
                 object.put(RESULT_DATA, photos == null ? "" : photos);
                 autoCallbackEvent.onChoosePic(object);

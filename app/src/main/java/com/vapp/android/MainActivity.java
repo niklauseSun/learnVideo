@@ -18,7 +18,8 @@ import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
 import com.quick.core.baseapp.baseactivity.FrmBaseActivity;
 import com.quick.jsbridge.bean.QuickBean;
 import com.quick.jsbridge.view.QuickWebLoader;
-import com.vapp.android.webView.VWebView;
+import com.vapp.android.activitys.CallActivity;
+import com.vapp.android.activitys.MessageSend;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -34,6 +35,8 @@ public class MainActivity extends FrmBaseActivity implements EasyPermissions.Per
     private Button defaultButton = null;
     private Button prevButton = null;
     private Button scanButton = null;
+    private Button callTest = null;
+    private Button goToMessageButton = null;
 
     private Context mContext = this;
 
@@ -45,12 +48,16 @@ public class MainActivity extends FrmBaseActivity implements EasyPermissions.Per
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        requestCodeQRCodePermissions();
+
         pageControl.getNbBar().hide();
 
         inputButton = findViewById(R.id.inputButton);
         defaultButton = findViewById(R.id.defaultButton);
         prevButton = findViewById(R.id.prevButton);
         scanButton = findViewById(R.id.scan_button);
+        callTest = findViewById(R.id.goToCall);
+        goToMessageButton = findViewById(R.id.goToMessage);
 
         inputButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,6 +91,24 @@ public class MainActivity extends FrmBaseActivity implements EasyPermissions.Per
                 Intent mintent = new Intent(MainActivity.this, QuickWebLoader.class);
                 QuickBean bean = new QuickBean("https://www.baidu.com");
                 mintent.putExtra("bean", bean);
+                startActivity(mintent);
+            }
+        });
+
+        callTest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mintent = new Intent(MainActivity.this, CallActivity.class);
+
+                startActivity(mintent);
+            }
+        });
+
+        goToMessageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mintent = new Intent(MainActivity.this, MessageSend.class);
+
                 startActivity(mintent);
             }
         });
@@ -140,9 +165,13 @@ public class MainActivity extends FrmBaseActivity implements EasyPermissions.Per
     }
 
     private void jumpToWebView(Context context, String url) {
-        Intent starter = new Intent(context, VWebView.class);
-        starter.putExtra("loadUrl", url);
-        startActivity(starter);
+        Intent mintent = new Intent(MainActivity.this, QuickWebLoader.class);
+        QuickBean bean = new QuickBean(url);
+        mintent.putExtra("bean", bean);
+        startActivity(mintent);
+//        Intent starter = new Intent(context, VWebView.class);
+//        starter.putExtra("loadUrl", url);
+//        startActivity(starter);
     }
 
     private static String pattern = "^([hH][tT]{2}[pP]://|[hH][tT]{2}[pP][sS]://)(([A-Za-z0-9-~]+).)+([A-Za-z0-9-~\\/])+$";
@@ -180,7 +209,7 @@ public class MainActivity extends FrmBaseActivity implements EasyPermissions.Per
 
     @AfterPermissionGranted(REQUEST_CODE_QRCODE_PERMISSIONS)
     private void requestCodeQRCodePermissions() {
-        String [] perms = {Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE};
+        String [] perms = {Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
         if (!EasyPermissions.hasPermissions(this, perms)) {
             EasyPermissions.requestPermissions(this, "扫描二维码需要打开相机和散光灯的权限", REQUEST_CODE_QRCODE_PERMISSIONS, perms);
         }

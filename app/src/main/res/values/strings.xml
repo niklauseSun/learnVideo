@@ -8,4 +8,11 @@
     <string name="share_code_hint">Share the code so that others can call you</string>
     <string name="powered_by_agora" translatable="false">Powered by agora.io</string>
     <string name="need_necessary_permissions">Necessary permissions acquired</string>
+
+    <string name="silversea_app_id">3dc9b22d18a8405ea10efc0fcc2054d7</string>
+    <string name="silversea_app_secure">64e3e77dc98b4e30b796f1c0b161d74e</string>
+    <string name="silversea_channel_name">voiceDemoChannel1</string>
+    <string name="silversea_short_token">0063dc9b22d18a8405ea10efc0fcc2054d7IAAgWKUHhcj+MIO4+G/42np+HeJ/GeCwuo4hXAvuTZqXzj37XygAAAAAEAAm+nFWP2/lYAEAAQA/b+Vg</string>
+
+    <string name="silversea_app_id_test">511767b5f6974accbae15e9022518589</string>
 </resources>

@@ -28,6 +28,7 @@ dependencies {
 
     implementation project(':core')
     implementation project(':jsbridge')
+    implementation project(':TakeToSee')
 
     // QQ UI 组件库
     implementation 'com.qmuiteam:qmui:2.0.0-alpha10'
