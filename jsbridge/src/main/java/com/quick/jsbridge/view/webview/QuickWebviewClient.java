@@ -3,6 +3,7 @@ package com.quick.jsbridge.view.webview;
 import android.graphics.Bitmap;
 import android.net.http.SslError;
 import android.os.Build;
+import android.util.Log;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -11,6 +12,10 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import androidx.annotation.RequiresApi;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 /**
  * Created by dailichun on 2017/12/6.
@@ -49,10 +54,30 @@ public class QuickWebviewClient extends WebViewClient {
      * @param request
      * @return
      */
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
         WebResourceResponse resourceResponse = null;
+        FileInputStream input;
+
+        String imgUrl = request.getUrl().toString();
+
+        String key = "http://localimg";
+
+        if (imgUrl.startsWith(key)) {
+            String imgPath = imgUrl.replace(key, "");
+            Log.i("load local img", "本地图片路径：" + imgPath);
+            try {
+                input = new FileInputStream(new File(imgPath.trim()));
+                WebResourceResponse response = new WebResourceResponse("image/jpg", "UTF-8", input);
+                return response;
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+
             resourceResponse = loadPage.shouldInterceptRequest(view, request.getUrl().toString());
         }
         if (resourceResponse == null) {

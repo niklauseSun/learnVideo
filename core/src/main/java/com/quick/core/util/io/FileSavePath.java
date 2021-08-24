@@ -1,10 +1,14 @@
 package com.quick.core.util.io;
 
+import android.content.Context;
+import android.os.Build;
 import android.os.Environment;
 import android.text.TextUtils;
 
 import com.quick.core.util.app.AppUtil;
 import com.quick.core.util.common.RuntimeUtil;
+
+import java.io.File;
 
 /**
  * Created by dailichun on 2017/12/6.
@@ -12,13 +16,27 @@ import com.quick.core.util.common.RuntimeUtil;
  */
 
 public class FileSavePath {
+
     /**
      * 获取应用根文件夹
      *
      * @return
      */
-    public static String getStoragePath() {
-        return Environment.getExternalStorageDirectory().getPath() + "/" + RuntimeUtil.getPackageName(AppUtil.getApplicationContext()) + "/";
+    public static String getStoragePath(Context context) {
+        File dir = null;
+        boolean state = Environment.getExternalStorageState().equals( Environment.MEDIA_MOUNTED );
+        if (state) {
+            if (Build.VERSION.SDK_INT >= 29) {
+                //Android10之后
+                dir = context.getExternalFilesDir(null);
+            } else {
+                dir = Environment.getExternalStorageDirectory();
+            }
+        } else {
+            dir = Environment.getRootDirectory();
+        }
+        return dir.toString();
+//        return Environment.getExternalStorageDirectory().getPath() + "/" + RuntimeUtil.getPackageName(AppUtil.getApplicationContext()) + "/";
     }
 
     /**
@@ -27,7 +45,7 @@ public class FileSavePath {
      * @return
      */
     public static String getLogFolder() {
-        return getStoragePath() + "Log/";
+        return getStoragePath(null) + "Log/";
     }
 
     /**
@@ -35,7 +53,7 @@ public class FileSavePath {
      *
      * @return
      */
-    public static String getUserFolder() {
+    public static String getUserFolder(Context context) {
         String userRole = "";
 
         // TODO: 可以根据登陆用户获取不同路径，这里暂时预留
@@ -43,7 +61,7 @@ public class FileSavePath {
         if (TextUtils.isEmpty(userRole)) {
             userRole = "Vistor";
         }
-        return getStoragePath() + userRole + "/";
+        return getStoragePath(context) + userRole + "/";
     }
 
     /**
@@ -51,8 +69,8 @@ public class FileSavePath {
      *
      * @return
      */
-    public static String getTempFolder() {
-        return getUserFolder() + "Temp/";
+    public static String getTempFolder(Context context) {
+        return getUserFolder(context) + "Temp/";
     }
 
     /**
@@ -62,7 +80,7 @@ public class FileSavePath {
      * @return
      */
     public static String getAttachFolder(String type) {
-        return getUserFolder() + (TextUtils.isEmpty(type) ? "" : type + "/") + "Attach/";
+        return getUserFolder(null) + (TextUtils.isEmpty(type) ? "" : type + "/") + "Attach/";
     }
 
     /**
@@ -80,6 +98,6 @@ public class FileSavePath {
      * @return
      */
     public static String getUpgradeFolder() {
-        return getUserFolder() + "Upgrade/";
+        return getUserFolder(null) + "Upgrade/";
     }
 }

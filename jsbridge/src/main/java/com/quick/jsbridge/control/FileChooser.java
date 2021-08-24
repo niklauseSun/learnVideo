@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
@@ -11,6 +12,8 @@ import android.webkit.WebView;
 import android.widget.Button;
 
 
+import com.donkingliang.imageselector.entry.Image;
+import com.donkingliang.imageselector.utils.ImageSelector;
 import com.quick.core.baseapp.component.FileChooseActivity;
 import com.quick.core.ui.widget.dialog.ActionSheet;
 import com.quick.core.util.device.PhotoSelector;
@@ -92,6 +95,8 @@ public class FileChooser implements IFileChooser {
         String[] acceptTypes = new String[0];
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             acceptTypes = fileChooserParams.getAcceptTypes();
+            Log.i("FileChooser", acceptTypes.toString());
+            Log.i("FileChooser", fileChooserParams.toString());
         }
         dealOpenFileChooser(acceptTypes.length > 0 ? acceptTypes[0] : "");
     }
@@ -176,7 +181,7 @@ public class FileChooser implements IFileChooser {
                 });
 
             } else if (requestCode == IMAGE_REQUEST_CODE) {
-                //选择相册
+                // 选择相册
                 photoSelector.handlePick(fragment.getPageControl().getActivity(), data, new PhotoSelector.CompressResult() {
                     @Override
                     public void onCompelete(String path) {
@@ -213,10 +218,8 @@ public class FileChooser implements IFileChooser {
                 String title = ((Button) btn).getText().toString();
                 if (imageTitle.equals(title)) {
                     photoSelector.requestPhotoPick(fragment, IMAGE_REQUEST_CODE);
-
                 } else if (cameraTtile.equals(title)) {
                     photoSelector.requestSysCamera(fragment, CAMERA_REQUEST_CODE);
-
                 } else if (fileTitle.equals(title)) {
                     FileChooseActivity.goFileChooseActivity(fragment, FILE_REQUEST_CODE);
                 }

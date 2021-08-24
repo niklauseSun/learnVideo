@@ -1,9 +1,20 @@
 package com.quick.jsbridge.control;
 
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Environment;
+import android.os.ParcelFileDescriptor;
+import android.provider.MediaStore;
+import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.webkit.DownloadListener;
+import android.widget.Toast;
 
 import com.donkingliang.imageselector.utils.ImageSelector;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -16,6 +27,7 @@ import com.quick.jsbridge.api.DeviceApi;
 import com.quick.jsbridge.api.NavigatorApi;
 import com.quick.jsbridge.api.PageApi;
 import com.quick.jsbridge.api.RuntimeApi;
+import com.quick.jsbridge.api.TakeToSeeApi;
 import com.quick.jsbridge.api.UIApi;
 import com.quick.jsbridge.api.UtilApi;
 import com.quick.jsbridge.bean.QuickBean;
@@ -28,6 +40,16 @@ import com.quick.jsbridge.view.webview.QuickWebView;
 import com.quick.jsbridge.view.webview.QuickWebviewClient;
 
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -102,6 +124,7 @@ public class WebloaderControl implements IActivityResult, SegActionCallBack, Dow
         JSBridge.register(RuntimeApi.RegisterName, RuntimeApi.class);
         JSBridge.register(UIApi.RegisterName, UIApi.class);
         JSBridge.register(UtilApi.RegisterName, UtilApi.class);
+        JSBridge.register(TakeToSeeApi.RegisterName, TakeToSeeApi.class);
     }
 
     /**
@@ -276,7 +299,6 @@ public class WebloaderControl implements IActivityResult, SegActionCallBack, Dow
                 }
                 object.put(RESULT_DATA, photos == null ? "" : photos);
                 autoCallbackEvent.onChoosePic(object);
-
             } else if (requestCode == CAMERA_REQUEST_CODE) {
                 //拍照
                 if (photoSelector != null) {
@@ -323,4 +345,33 @@ public class WebloaderControl implements IActivityResult, SegActionCallBack, Dow
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         quickFragment.getPageControl().getActivity().startActivity(intent);
     }
+
+
+    public static byte[] getFileBytes(File file) throws IOException {
+        ByteArrayOutputStream ous = null;
+        InputStream ios = null;
+        try {
+            byte[] buffer = new byte[4096];
+            ous = new ByteArrayOutputStream();
+            ios = new FileInputStream(file);
+            int read = 0;
+            while ((read = ios.read(buffer)) != -1)
+                ous.write(buffer, 0, read);
+        } finally {
+            try {
+                if (ous != null)
+                    ous.close();
+            } catch (IOException e) {
+                // swallow, since not that important
+            }
+            try {
+                if (ios != null)
+                    ios.close();
+            } catch (IOException e) {
+                // swallow, since not that important
+            }
+        }
+        return ous.toByteArray();
+    }
+
 }

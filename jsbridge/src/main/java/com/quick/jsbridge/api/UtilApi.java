@@ -1,9 +1,14 @@
 package com.quick.jsbridge.api;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.Image;
 import android.os.Bundle;
+import android.os.Environment;
+import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.webkit.WebView;
 
@@ -29,8 +34,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 import me.iwf.photopicker.PhotoPicker;
 import me.iwf.photopicker.PhotoPickerActivity;
@@ -135,4 +144,127 @@ public class UtilApi implements IBridgeImpl {
         }
     }
 
+    // 以下是定义的接口
+
+    /**
+     * 打开指定的文件夹
+     */
+    public static void openFolder(IQuickFragment webLoader, WebView wv, JSONObject param, Callback callback) {
+        try {
+            param.putOpt("className", FileChooseActivity.class.getName());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        PageApi.openLocal(webLoader, wv, param, callback);
+    }
+
+    /**
+     * 复制文件到指定文件夹
+     */
+    public static void copyFileToLocation(IQuickFragment webLoader, WebView wv, JSONObject param, Callback callback) throws IOException {
+        String path = param.optString("oldpath");
+        String desPath = param.optString("despath");
+        FileUtil.copyFile(path,desPath);
+    }
+
+    /**
+     * 新建文件夹
+     */
+    public static void createFolder(IQuickFragment webLoader, WebView wv, JSONObject param, Callback callback) {
+        String path = param.optString("path");
+        String rootPath = Environment.getExternalStorageDirectory().getPath();
+        FileUtil.foldCreate(rootPath + path);
+        callback.applySuccess();
+    }
+
+    /**
+     * 转换path为file
+     *
+     */
+
+    public static void pathToBaseImg(IQuickFragment webLoader, WebView wv, JSONObject param, Callback callback) {
+        String path = param.optString("path");
+
+        File file = new File(path);
+        if (!file.exists() || file.isDirectory()) {
+            callback.applyFail(webLoader.getPageControl().getContext().getString(R.string.status_request_error));
+        } else {
+            String base64 = FileUtil.file2Base64(file);
+            HashMap map = new HashMap();
+            map.put("result", base64);
+            callback.applySuccess(map);
+        }
+    }
+
+    // 保存数据到本地
+    public static void saveFilePaths(IQuickFragment webLoader, WebView wv, JSONObject param, Callback callback) {
+        JSONArray paths = param.optJSONArray("paths");
+        String saveName = param.optString("saveName");
+
+        SharedPreferences sharedPreferences= webLoader.getPageControl().getContext().getSharedPreferences(saveName, Context.MODE_PRIVATE);
+        //步骤2： 实例化SharedPreferences.Editor对象
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+
+        try {
+            editor.putString("paths", paths.join(","));
+
+            editor.apply();
+
+            callback.applySuccess();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    // 获取保存在本地的数据
+    public static void getFileList(IQuickFragment webLoader, WebView wv, JSONObject param, Callback callback) {
+        String saveName = param.optString("saveName");
+
+        SharedPreferences sharedPreferences= webLoader.getPageControl().getContext().getSharedPreferences(saveName, Context.MODE_PRIVATE);
+        String pathString = sharedPreferences.getString("paths","");
+
+        String[] list = pathString.split(",");
+        HashMap map = new HashMap();
+        map.put("files", list);
+
+        callback.applySuccess(map);
+    }
+
+    public static String imageToBase64(String path, Callback callback) {
+        if (TextUtils.isEmpty(path)) {
+            return null;
+        }
+        InputStream is = null;
+        byte[] data = null;
+        String result = null;
+        try {
+            is = new FileInputStream(path);
+            //创建一个字符流大小的数组。
+            data = new byte[is.available()];
+            //写入数组
+            is.read(data);
+            //用默认的编码格式进行编码
+            result = Base64.encodeToString(data, Base64.DEFAULT);
+            JSONObject json = new JSONObject();
+            json.put("base64",result);
+
+            callback.applySuccess(json);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (null != is) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+        return result;
+
+    }
 }

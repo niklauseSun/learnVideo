@@ -51,13 +51,31 @@
         app:layout_constraintTop_toBottomOf="@+id/scan_button"
         tools:layout_editor_absoluteX="161dp" />
 
-    <Button android:id="@+id/goToMessage"
+    <Button
+        android:id="@+id/goToMessage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        tools:layout_editor_absoluteX="161dp"
         android:text="即时通信测试"
-        app:layout_constraintTop_toBottomOf="@+id/goToCall"/>
+        app:layout_constraintTop_toBottomOf="@+id/goToCall"
+        tools:layout_editor_absoluteX="161dp" />
+
+    <Button
+        android:id="@+id/selectImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="选择图片测试"
+        app:layout_constraintTop_toBottomOf="@+id/goToMessage"
+        tools:layout_editor_absoluteX="178dp" />
+
+    <ImageView
+        android:id="@+id/showImage"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="84dp"
+        app:layout_constraintTop_toBottomOf="@+id/goToMessage"
+        tools:layout_editor_absoluteX="166dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

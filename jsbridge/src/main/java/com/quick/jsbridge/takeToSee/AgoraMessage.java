@@ -1,4 +1,4 @@
-package com.vapp.taketosee;
+package com.quick.jsbridge.takeToSee;
 
 import android.content.Context;
 import android.util.Log;
@@ -75,12 +75,17 @@ public class AgoraMessage implements IRtcImpl {
                     String text = "Message received from " + peerId + " Message: " + rtmMessage.getText() + "\n";
                     Log.i(LOG_MESSAGE, text);
 
-                    HashMap map = new HashMap();
+                    final HashMap map = new HashMap();
                     map.put("type", "messageReceivedFromPeer");
                     map.put("from", peerId);
                     map.put("message", rtmMessage.getText());
 
-                    mWebLoader.getWebloaderControl().autoCallbackEvent.onReceiveFromPeer(map);
+                    mWebLoader.getQuickWebView().post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mWebLoader.getWebloaderControl().autoCallbackEvent.onReceiveFromPeer(map);
+                        }
+                    });
                 }
 
                 @Override
@@ -90,6 +95,7 @@ public class AgoraMessage implements IRtcImpl {
 
                 @Override
                 public void onFileMessageReceivedFromPeer(RtmFileMessage rtmFileMessage, String s) {
+
 
                 }
 
@@ -119,7 +125,7 @@ public class AgoraMessage implements IRtcImpl {
     }
 
 
-    public void loginRTMClient(String token, String uid) {
+    public void loginRTMClient(String token,final String uid) {
         currentUid = uid;
         mRtmClient.login(token, uid, new ResultCallback<Void>() {
             @Override
@@ -128,7 +134,7 @@ public class AgoraMessage implements IRtcImpl {
 
                 HashMap map = new HashMap();
 
-                map.put("userId", uid);
+                map.put("userId",currentUid);
                 map.put("status", "success");
                 mWebLoader.getWebloaderControl().autoCallbackEvent.onLoginSuccess(map);
             }
@@ -149,7 +155,7 @@ public class AgoraMessage implements IRtcImpl {
         });
     }
 
-    public void loginRTMClientWithOutToken(String uid) {
+    public void loginRTMClientWithOutToken(final String uid) {
         currentUid = uid;
         mRtmClient.login(null, uid, new ResultCallback<Void>() {
             @Override
@@ -158,7 +164,7 @@ public class AgoraMessage implements IRtcImpl {
                 Log.i(LOG_TAG, "user:" + currentUid + "登录成功");
                 HashMap map = new HashMap();
 
-                map.put("userId", uid);
+                map.put("userId", currentUid);
                 map.put("status", "success");
                 mWebLoader.getWebloaderControl().autoCallbackEvent.onLoginSuccess(map);
             }
@@ -199,13 +205,20 @@ public class AgoraMessage implements IRtcImpl {
 
                 Log.i("CREATE MESSAGE LISTENER", message_text);
 
-                HashMap map = new HashMap();
+                final HashMap map = new HashMap();
                 map.put("type", "messageRecivedFromGroup");
                 map.put("channelId", rtmChannelMember.getChannelId());
                 map.put("userId", rtmChannelMember.getUserId());
                 map.put("message", text);
 
-                mWebLoader.getWebloaderControl().autoCallbackEvent.onReceiveFromGroup(map);
+                mWebLoader.getQuickWebView().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mWebLoader.getWebloaderControl().autoCallbackEvent.onReceiveFromGroup(map);
+                    }
+                });
+
+
             }
 
             @Override
@@ -220,20 +233,36 @@ public class AgoraMessage implements IRtcImpl {
 
             @Override
             public void onMemberJoined(RtmChannelMember rtmChannelMember) {
-                HashMap map = new HashMap();
+                final HashMap map = new HashMap();
                 map.put("type", "joined");
                 map.put("channelId", rtmChannelMember.getChannelId());
                 map.put("userId", rtmChannelMember.getUserId());
-                mWebLoader.getWebloaderControl().autoCallbackEvent.onJoinChannel(map);
+
+                mWebLoader.getQuickWebView().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mWebLoader.getWebloaderControl().autoCallbackEvent.onChannelJoinChanged(map);
+                        Log.i(LOG_TAG, map.toString());
+                    }
+                });
+
+
             }
 
             @Override
             public void onMemberLeft(RtmChannelMember rtmChannelMember) {
-                HashMap map = new HashMap();
+                final HashMap map = new HashMap();
                 map.put("type", "leave");
                 map.put("channelId", rtmChannelMember.getChannelId());
                 map.put("userId", rtmChannelMember.getUserId());
-                mWebLoader.getWebloaderControl().autoCallbackEvent.onLeaveChannel(map);
+
+
+                mWebLoader.getQuickWebView().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mWebLoader.getWebloaderControl().autoCallbackEvent.onChannelJoinChanged(map);
+                    }
+                });
             }
         };
     }
@@ -256,7 +285,9 @@ public class AgoraMessage implements IRtcImpl {
                 HashMap map = new HashMap();
                 map.put("type", "join");
                 map.put("status", "success");
+
                 mWebLoader.getWebloaderControl().autoCallbackEvent.onJoinChannel(map);
+
             }
 
             @Override
@@ -285,10 +316,13 @@ public class AgoraMessage implements IRtcImpl {
 
     public void leaveChannel() {
         mRtmChannel.leave(null);
+        HashMap map = new HashMap();
+        map.put("type", "leaveChannel");
+        mWebLoader.getWebloaderControl().autoCallbackEvent.onLeaveChannel(map);
     }
 
     // 点对点发送消息
-    public void sendPeerMessage(String message_content, String peer_id) {
+    public void sendPeerMessage(String message_content,final String peer_id) {
         // 创建消息实例
         final RtmMessage message = mRtmClient.createMessage();
         message.setText(message_content);
@@ -330,7 +364,7 @@ public class AgoraMessage implements IRtcImpl {
     // 发送channel短信
     public void sendChannelMessage(String channel_message) {
         // 创建消息实例
-        RtmMessage message = mRtmClient.createMessage();
+        final RtmMessage message = mRtmClient.createMessage();
         message.setText(channel_message);
 
         mRtmChannel.sendMessage(message, new ResultCallback<Void>() {

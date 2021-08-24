@@ -89,10 +89,15 @@ public class PageApi implements IBridgeImpl {
         String activityName = param.optString("className");
         String isOpenExist = param.optString("isOpenExist");
         String data = param.optString("data");
+        String path = param.optString("path");
         try {
             Class clz = Class.forName(activityName);
             Intent intent = new Intent(webLoader.getPageControl().getContext(), clz);
             intent.putExtra("from", "quick");
+            if (!TextUtils.isEmpty(path)) {
+                intent.putExtra("path", path);
+            }
+
             if ("1".equals(isOpenExist)) {
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             }

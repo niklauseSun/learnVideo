@@ -6,6 +6,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+
 import com.google.gson.Gson;
 import com.quick.jsbridge.view.webview.QuickWebView;
 
@@ -82,6 +84,10 @@ public class Callback {
         apply(1, "", map == null ? null : new JSONObject(map));
     }
 
+    public void postMessage(String handlerName,  Map<String, Object> map) {
+        postMessage(handlerName,map == null? null: new JSONObject(map));
+    }
+
     /**
      * 成功回调
      *
@@ -107,6 +113,19 @@ public class Callback {
         } catch (JSONException e) {
             e.printStackTrace();
             apply(0, e.toString(), new JSONObject());
+        }
+    }
+
+    private void postMessage(String handlerName, JSONObject responseData) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("data", responseData);
+            jsonObject.put("handlerName", handlerName == null ? "" : handlerName);
+            String execJs = String.format(JS_FUNCTION, String.valueOf(jsonObject));
+            callJS(execJs);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            postMessage(handlerName, new JSONObject());
         }
     }
 

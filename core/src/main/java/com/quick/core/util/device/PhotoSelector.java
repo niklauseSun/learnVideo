@@ -32,6 +32,8 @@ import java.util.HashMap;
 
 public class PhotoSelector {
 
+    private Context context;
+
     /**
      * 保存的相册宽度，超过该宽度会等比例缩小
      */
@@ -198,6 +200,7 @@ public class PhotoSelector {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                context = con;
                 handlePickBack(con, intent);
                 handler.sendEmptyMessage(0x1001);
             }
@@ -257,7 +260,7 @@ public class PhotoSelector {
      */
     public String getDirPath() {
         if (TextUtils.isEmpty(dirPath)) {
-            this.dirPath = FileSavePath.getTempFolder();
+            this.dirPath = FileSavePath.getTempFolder(context);
         }
         return this.dirPath;
     }

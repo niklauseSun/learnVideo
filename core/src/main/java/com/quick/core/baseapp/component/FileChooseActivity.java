@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -54,6 +55,8 @@ public class FileChooseActivity extends FrmBaseActivity {
 
     private String rootPath;
 
+    private String selectPath;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,14 +70,21 @@ public class FileChooseActivity extends FrmBaseActivity {
         if (TextUtils.isEmpty(rootPath)) {
             rootPath = Environment.getExternalStorageDirectory().getPath();
         }
-        if (!TextUtils.isEmpty(rootPath)) {
+
+        selectPath = getIntent().getStringExtra("path");
+
+        if (!TextUtils.isEmpty(selectPath) && !TextUtils.isEmpty(rootPath)) {
+            mData = getData(rootPath + selectPath);
+        } else if (!TextUtils.isEmpty(rootPath)) {
             mData = getData(rootPath);
         } else {
             mData = new ArrayList<>();
             toast(getString(R.string.file_no_sdcard));
         }
 
-        lv = (ListView) findViewById(ResManager.getIdInt("lv"));
+        lv = (ListView) findViewById(R.id.lv);
+//        lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+
         adapter = new MyAdapter(this);
         lv.setAdapter(adapter);
         lv.setOnItemClickListener(new OnItemClickListener() {
@@ -165,6 +175,7 @@ public class FileChooseActivity extends FrmBaseActivity {
     public final class ViewHolder {
         public ImageView fc_img;
         public TextView fc_title;
+        public CheckBox cb;
     }
 
     public class MyAdapter extends BaseAdapter {
@@ -197,6 +208,7 @@ public class FileChooseActivity extends FrmBaseActivity {
                 convertView = mInflater.inflate(R.layout.frm_localfilelist_adapter, null);
                 holder.fc_img = (ImageView) convertView.findViewById(R.id.fc_img);
                 holder.fc_title = (TextView) convertView.findViewById(R.id.fc_title);
+                holder.cb = (CheckBox) convertView.findViewById(R.id.fc_select);
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();

@@ -92,4 +92,67 @@ public interface AutoCallbackDefined {
 
     void onChooseContact(Map<String, Object> object);
 
+
+    // 加入channel回调
+    String onJoinChannel = "onJoinChannel";
+
+    void onJoinChannel(Map<String, Object> object);
+
+    String onLeaveChannel = "onLeaveChannel";
+
+    void onLeaveChannel(Map<String, Object> object);
+
+    String onReceiveFromGroup = "onReceiveFromGroup";
+
+    void onReceiveFromGroup(Map<String, Object> object);
+
+    String onReceiveFromPeer = "onReceiveFromPeer";
+
+    void onReceiveFromPeer(Map<String, Object> object);
+
+    // 初始化成功
+    String onInitRTMSuccess = "onInitRTMSuccess";
+
+    void onInitRTMSuccess(Map<String, Object> object);
+
+    // 登录成功
+    String onLoginSuccess = "onLoginSuccess";
+
+    void onLoginSuccess(Map<String, Object> object);
+
+    // 登出成功
+    String onLogoutSuccess = "onLogoutSuccess";
+
+    void onLogoutSuccess(Map<String, Object> object);
+
+    // 发送消息
+    String onSendPeerMessage = "onSendPeerMessage";
+
+    void onSendPeerMessage(Map<String, Object> object);
+
+    // 发送群组消息
+    String onSendGroupMessage = "onSendGroupMessage";
+
+    void onSendGroupMessage(Map<String, Object> object);
+
+    // 监听call user 进入离开
+    String onCallUserState = "onCallUserState";
+
+    void onCallUserState(Map<String, Object> object);
+
+    // 监听call 静音
+    String onCallUserMute = "onCallUserMute";
+    void onCallUserMute(Map<String, Object> object);
+
+    String onChannelJoinChanged = "onChannelJoinChanged";
+    void onChannelJoinChanged(Map<String, Object> object);
+
+    String onInitCall = "onInitCall";
+    void onInitCall(Map<String, Object> object);
+
+    String onJoinCallChannel = "onJoinCallChannel";
+    void onJoinCallChannel(Map<String, Object> object);
+
+    String onLeaveCallChannel = "onLeaveCallChannel";
+    void onLeaveCallChannel(Map<String, Object> object);
 }

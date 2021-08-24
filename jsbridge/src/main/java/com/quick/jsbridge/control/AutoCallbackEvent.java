@@ -1,9 +1,16 @@
 package com.quick.jsbridge.control;
 
+import android.app.Activity;
+import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.quick.jsbridge.bridge.Callback;
 import com.quick.jsbridge.view.webview.QuickWebView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,6 +24,8 @@ public class AutoCallbackEvent implements AutoCallbackDefined {
     private HashMap<String, String> portMap;
 
     private QuickWebView wv;
+
+    private static String JS_FUNCTION = "javascript:JSBridge._handleMessageFromNative(%s);";
 
     public AutoCallbackEvent(QuickWebView wv, HashMap<String, String> portMap) {
         this.portMap = portMap;
@@ -107,6 +116,81 @@ public class AutoCallbackEvent implements AutoCallbackDefined {
         callJS(OnChooseContact,wv,object);
     }
 
+    @Override
+    public void onLeaveChannel(Map<String, Object> object) {
+        callJS(onLeaveChannel, wv, object);
+    }
+
+    @Override
+    public void onJoinChannel(Map<String, Object> object) {
+        callJS(onJoinChannel, wv, object);
+    }
+
+    @Override
+    public void onReceiveFromGroup(Map<String, Object> object) {
+        postMessage(onReceiveFromGroup, wv, object);
+    }
+
+    @Override
+    public void onReceiveFromPeer(Map<String, Object> object) {
+        postMessage(onReceiveFromPeer, wv, object);
+    }
+
+    @Override
+    public void onInitRTMSuccess(Map<String, Object> object) {
+        callJS(onInitRTMSuccess, wv, object);
+    }
+
+    @Override
+    public void onLoginSuccess(Map<String, Object> object) {
+        callJS(onLoginSuccess, wv, object);
+    }
+
+    @Override
+    public void onLogoutSuccess(Map<String, Object> object) {
+        callJS(onLogoutSuccess, wv, object);
+    }
+
+    @Override
+    public void onSendGroupMessage(Map<String, Object> object) {
+        callJS(onSendGroupMessage, wv, object);
+    }
+
+    @Override
+    public void onSendPeerMessage(Map<String, Object> object) {
+        callJS(onSendPeerMessage, wv, object);
+    }
+
+    @Override
+    public void onCallUserState(Map<String, Object> object) {
+        postMessage(onCallUserState, wv, object);
+    }
+
+    @Override
+    public void onCallUserMute(Map<String, Object> object) {
+        postMessage(onCallUserMute, wv, object);
+    }
+
+    @Override
+    public void onChannelJoinChanged(Map<String, Object> object) {
+        postMessage(onChannelJoinChanged, wv, object);
+    }
+
+    @Override
+    public void onInitCall(Map<String, Object> object) {
+        callJS(onInitCall, wv, object);
+    }
+
+    @Override
+    public void onJoinCallChannel(Map<String, Object> object) {
+        callJS(onJoinCallChannel, wv, object);
+    }
+
+    @Override
+    public void onLeaveCallChannel(Map<String, Object> object) {
+        callJS(onLeaveCallChannel, wv, object);
+    }
+
     private void callJS(String key, QuickWebView wv, Map<String, Object> object) {
         if (wv == null) {
             return;
@@ -120,6 +204,16 @@ public class AutoCallbackEvent implements AutoCallbackDefined {
             callback.applySuccess(object);
         }
     }
+
+    private void postMessage(String key, QuickWebView wv, Map<String, Object> object) {
+        if (wv == null) {
+            return;
+        }
+        Callback callback = new Callback("", wv);
+        callback.postMessage(key,  object);
+    }
+
+
 
 
     /**

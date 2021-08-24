@@ -82,8 +82,12 @@ public class QuickWebView extends WebView {
         settings.setUserAgentString(ua + " QuickHybridJs/" + BuildConfig.VERSION_NAME);
         // 设置支持JS
         settings.setJavaScriptEnabled(true);
+        settings.setAllowFileAccessFromFileURLs(true);
+        settings.setAllowUniversalAccessFromFileURLs(true);
         // 设置是否支持meta标签来控制缩放
         settings.setUseWideViewPort(true);
+        settings.setBlockNetworkImage(false);
+        settings.setAllowFileAccess(true);
         // 缩放至屏幕的大小
         settings.setLoadWithOverviewMode(true);
         // 设置内置的缩放控件（若SupportZoom为false，该设置项无效）

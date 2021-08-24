@@ -6,13 +6,16 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.donkingliang.imageselector.utils.ImageSelector;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
 import com.quick.core.baseapp.baseactivity.FrmBaseActivity;
@@ -21,6 +24,7 @@ import com.quick.jsbridge.view.QuickWebLoader;
 import com.vapp.android.activitys.CallActivity;
 import com.vapp.android.activitys.MessageSend;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -37,6 +41,8 @@ public class MainActivity extends FrmBaseActivity implements EasyPermissions.Per
     private Button scanButton = null;
     private Button callTest = null;
     private Button goToMessageButton = null;
+    private Button selectImageButton = null;
+    private ImageView showImage = null;
 
     private Context mContext = this;
 
@@ -58,6 +64,8 @@ public class MainActivity extends FrmBaseActivity implements EasyPermissions.Per
         scanButton = findViewById(R.id.scan_button);
         callTest = findViewById(R.id.goToCall);
         goToMessageButton = findViewById(R.id.goToMessage);
+        selectImageButton = findViewById(R.id.selectImage);
+        showImage = findViewById(R.id.showImage);
 
         inputButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,6 +118,20 @@ public class MainActivity extends FrmBaseActivity implements EasyPermissions.Per
                 Intent mintent = new Intent(MainActivity.this, MessageSend.class);
 
                 startActivity(mintent);
+            }
+        });
+
+        selectImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //单选
+                ImageSelector.builder()
+                        .useCamera(true) // 设置是否使用拍照
+                        .setSingle(true)  //设置是否单选
+                        .canPreview(true) //是否可以预览图片，默认为true
+                        .start(getActivity(), ImageSelector.RESULT_CODE); // 打开相册
+
             }
         });
     }
@@ -212,6 +234,21 @@ public class MainActivity extends FrmBaseActivity implements EasyPermissions.Per
         String [] perms = {Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
         if (!EasyPermissions.hasPermissions(this, perms)) {
             EasyPermissions.requestPermissions(this, "扫描二维码需要打开相机和散光灯的权限", REQUEST_CODE_QRCODE_PERMISSIONS, perms);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == ImageSelector.RESULT_CODE) {
+            //选择或预览图片回传值
+            ArrayList<String> photos = null;
+            if (data != null) {
+                photos = data.getStringArrayListExtra(ImageSelector.SELECT_RESULT);
+                Uri uri = Uri.parse(photos.get(0));
+                showImage.setImageURI(uri);
+            }
         }
     }
 }
