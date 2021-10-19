@@ -167,19 +167,19 @@ public class PageLoad implements ILoadPage {
 
     @Override
     public void onProgressChanged(WebView view, int newProgress) {
-        fragment.getProgressBar().setProgress(newProgress);
-        if (newProgress == 100) {
-            view.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    fragment.getProgressBar().setVisibility(View.GONE);
-                }
-            }, 500);
-        } else {
-            if (fragment.getProgressBar().getVisibility() == View.GONE) {
-                fragment.getProgressBar().setVisibility(View.VISIBLE);
-            }
-        }
+//        fragment.getProgressBar().setProgress(newProgress);
+//        if (newProgress == 100) {
+//            view.postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    fragment.getProgressBar().setVisibility(View.GONE);
+//                }
+//            }, 500);
+//        } else {
+//            if (fragment.getProgressBar().getVisibility() == View.GONE) {
+//                fragment.getProgressBar().setVisibility(View.VISIBLE);
+//            }
+//        }
     }
 
     @Override
@@ -219,7 +219,7 @@ public class PageLoad implements ILoadPage {
             //过滤页面图标无法找到的错误，这个错误在6.0+系统的每个页面都会产生，但实际上移动端不需要设置该图标
             return;
         }
-        fragment.getProgressBar().setProgress(0);
+//        fragment.getProgressBar().setProgress(0);
         fragment.getPageControl().hideLoading();
         //将错误信息回调给前端
         new Callback(String.valueOf(errorCode), fragment.getQuickWebView()).applyNativeError(url, errorDescription);
@@ -282,7 +282,7 @@ public class PageLoad implements ILoadPage {
                     @Override
                     public void run() {
                         fragment.getPageControl().hideLoading();
-                        fragment.getProgressBar().setProgress(0);
+//                        fragment.getProgressBar().setProgress(0);
                         ((WebView) view).loadUrl(WebloaderControl.BLANK);
                         fragment.getPageControl().getStatusPage().showStatus(StatusControl.STATUS_TIMEOUT_ERROR);
                     }

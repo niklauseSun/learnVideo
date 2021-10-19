@@ -20,14 +20,24 @@ import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
 import com.quick.core.baseapp.baseactivity.FrmBaseActivity;
 import com.quick.jsbridge.bean.QuickBean;
+import com.quick.jsbridge.view.QuickFragment;
 import com.quick.jsbridge.view.QuickWebLoader;
 import com.vapp.android.activitys.CallActivity;
 import com.vapp.android.activitys.MessageSend;
 
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
@@ -46,12 +56,57 @@ public class MainActivity extends FrmBaseActivity implements EasyPermissions.Per
 
     private Context mContext = this;
 
+    public static final MediaType JSON
+            = MediaType.get("application/json; charset=utf-8");
+
     private static String prevUrlKey = "prevUrl";
     private static String defaultUrl = "https://www.zhihu.com/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Log.i("test", "requestBaseUrl111");
+
+        SharedPreferences sharedPreferences= getSharedPreferences("data", Context .MODE_PRIVATE);
+        String url = sharedPreferences.getString("baseReqUrl","https://m.mspace.com.sg/mobile/");
+
+//        nomalInit(url);
+        requestBaseUrl();
+    }
+
+    private void nomalInit(String url) {
+//        String url = "https://m.mspace.com.sg/mobile/";
+        Intent mintent = new Intent(MainActivity.this, QuickWebLoader.class);
+
+        QuickBean bean = new QuickBean(url);
+        bean.pageStyle = -1;
+        mintent.putExtra("bean", bean);
+        mintent.setFlags(Intent.FLAG_ACTIVITY_TASK_ON_HOME);
+
+        startActivity(mintent);
+        this.finish();
+    }
+
+    private void compareUrl(String newUrl) {
+        SharedPreferences sharedPreferences= getSharedPreferences("data", Context .MODE_PRIVATE);
+        String oldUrl = sharedPreferences.getString("url","https://m.mspace.com.sg/mobile/");
+
+        if (!newUrl.equals(oldUrl)) {
+            nomalInit(newUrl);
+
+            //步骤1：创建一个SharedPreferences对象
+            SharedPreferences share = getSharedPreferences("data", Context.MODE_PRIVATE);
+            //步骤2： 实例化SharedPreferences.Editor对象
+            SharedPreferences.Editor editor = share.edit();
+            //步骤3：将获取过来的值放入文件
+            editor.putString("baseReqUrl", newUrl);
+            //步骤4：提交
+            editor.commit();
+        }
+    }
+
+    private void testInit() {
         setContentView(R.layout.activity_main);
 
         requestCodeQRCodePermissions();
@@ -250,5 +305,33 @@ public class MainActivity extends FrmBaseActivity implements EasyPermissions.Per
                 showImage.setImageURI(uri);
             }
         }
+    }
+
+    private void requestBaseUrl() {
+
+        new Thread(new Runnable(){
+            @Override
+            public void run() {
+                // Do network action in this function
+                String url = "https://jiance.99rongle.com/prod-api/mate-component/config/get-h5-url";
+                OkHttpClient client = new OkHttpClient().newBuilder()
+                        .readTimeout(60, TimeUnit.SECONDS) // 设置读取超时时间
+                        .writeTimeout(60, TimeUnit.SECONDS) // 设置写的超时时间
+                        .connectTimeout(60, TimeUnit.SECONDS) // 设置连接超时时间
+                        .build();
+                RequestBody body = RequestBody.create("", JSON);
+                Request request = new Request.Builder().url(url).post(body).build();
+                Log.i("test", "requestBaseUrl");
+                try (Response response= client.newCall(request).execute()) {
+                    JSONObject obj = new JSONObject(response.body().string());
+                    String st = obj.optString("data");
+                    Log.e("download url", st);
+                    compareUrl(st);
+                } catch (Exception e) {
+                    Log.i("test", "test");
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 }

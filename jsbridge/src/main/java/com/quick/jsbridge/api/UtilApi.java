@@ -25,6 +25,8 @@ import com.quick.jsbridge.bridge.Callback;
 import com.quick.jsbridge.bridge.IBridgeImpl;
 import com.quick.jsbridge.control.AutoCallbackDefined;
 import com.quick.jsbridge.control.WebloaderControl;
+import com.quick.jsbridge.takeToSee.FileSplit;
+import com.quick.jsbridge.takeToSee.UploadInstance;
 import com.quick.jsbridge.view.IQuickFragment;
 import com.quick.jsbridge.view.QuickFragment;
 import com.quick.jsbridge.view.QuickWebLoader;
@@ -232,39 +234,31 @@ public class UtilApi implements IBridgeImpl {
         callback.applySuccess(map);
     }
 
-    public static String imageToBase64(String path, Callback callback) {
-        if (TextUtils.isEmpty(path)) {
-            return null;
-        }
-        InputStream is = null;
-        byte[] data = null;
-        String result = null;
-        try {
-            is = new FileInputStream(path);
-            //创建一个字符流大小的数组。
-            data = new byte[is.available()];
-            //写入数组
-            is.read(data);
-            //用默认的编码格式进行编码
-            result = Base64.encodeToString(data, Base64.DEFAULT);
-            JSONObject json = new JSONObject();
-            json.put("base64",result);
 
-            callback.applySuccess(json);
+    public static void getMd5List(IQuickFragment webLoader, WebView wv, JSONObject param, Callback callback) {
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (null != is) {
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+        String filePath = param.optString("filePath");
+        ArrayList md5List = FileSplit.calculateFile(filePath, webLoader.getPageControl().getContext());
 
-        }
-        return result;
+        HashMap map = new HashMap();
 
+        map.put("md5List", md5List);
+        callback.applySuccess(map);
+    }
+
+    public static void uploadImage(IQuickFragment webLoader, WebView wv, JSONObject param, Callback callback) {
+        String reqUrl = param.optString("reqUrl");
+        String type = param.optString("type");
+        String filePath = param.optString("filePath");
+
+        UploadInstance.UploadImage(reqUrl, type, filePath);
+    }
+
+    public static void uploadMd5Part(IQuickFragment webLoader, WebView wv, JSONObject param, Callback callback) {
+        String reqUrl = param.optString("reqUrl");
+        String type = param.optString("type");
+        int index = param.optInt("index");
+
+        FileSplit.uploadMd5(reqUrl, type, index);
     }
 }
