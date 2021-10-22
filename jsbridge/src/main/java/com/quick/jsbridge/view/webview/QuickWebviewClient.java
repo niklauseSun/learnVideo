@@ -1,6 +1,8 @@
 package com.quick.jsbridge.view.webview;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.util.Log;
@@ -113,6 +115,21 @@ public class QuickWebviewClient extends WebViewClient {
     public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             String url = request.getUrl().toString();
+
+            if (url.startsWith("weixin://wap/pay?")) {
+
+                Intent intent = new Intent();
+
+                intent.setAction(Intent.ACTION_VIEW);
+
+                intent.setData(Uri.parse(url));
+
+                loadPage.getFragment().getPageControl().getActivity().startActivity(intent);
+
+                return true;
+
+            }
+
             if (request.isRedirect()) {
                 loadPage.forwardUrl(view, url);
             }

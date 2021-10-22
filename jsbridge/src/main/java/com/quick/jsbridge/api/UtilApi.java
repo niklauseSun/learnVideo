@@ -69,9 +69,6 @@ public class UtilApi implements IBridgeImpl {
         if (fragment instanceof Fragment) {
             integrator = IntentIntegrator.forFragment((Fragment) fragment);
         }
-//        else if (fragment instanceof android.support.v4.app.Fragment) {
-//            integrator = IntentIntegrator.forSupportFragment((android.support.v4.app.Fragment) fragment);
-//        }
         if (integrator != null) {
             integrator.setCaptureActivity(ScanCaptureActivity.class);
             integrator.initiateScan();
