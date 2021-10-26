@@ -27,27 +27,19 @@ import com.quick.jsbridge.api.DeviceApi;
 import com.quick.jsbridge.api.NavigatorApi;
 import com.quick.jsbridge.api.PageApi;
 import com.quick.jsbridge.api.RuntimeApi;
-import com.quick.jsbridge.api.TakeToSeeApi;
 import com.quick.jsbridge.api.UIApi;
 import com.quick.jsbridge.api.UtilApi;
 import com.quick.jsbridge.bean.QuickBean;
 import com.quick.jsbridge.bridge.JSBridge;
 import com.quick.jsbridge.view.IQuickFragment;
-import com.quick.jsbridge.view.QuickFragment;
 import com.quick.jsbridge.view.webview.IActivityResult;
 import com.quick.jsbridge.view.webview.QuickWebChromeClient;
 import com.quick.jsbridge.view.webview.QuickWebView;
 import com.quick.jsbridge.view.webview.QuickWebviewClient;
 
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileDescriptor;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -124,7 +116,6 @@ public class WebloaderControl implements IActivityResult, SegActionCallBack, Dow
         JSBridge.register(RuntimeApi.RegisterName, RuntimeApi.class);
         JSBridge.register(UIApi.RegisterName, UIApi.class);
         JSBridge.register(UtilApi.RegisterName, UtilApi.class);
-        JSBridge.register(TakeToSeeApi.RegisterName, TakeToSeeApi.class);
     }
 
     /**

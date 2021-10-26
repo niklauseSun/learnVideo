@@ -7,14 +7,14 @@ import android.widget.Button;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.vapp.taketosee.TakeToSee;
+//import com.vapp.taketosee.TakeToSee;
 import com.vapp.android.R;
 
 public class CallActivity extends AppCompatActivity {
 
     private Button callButton = null;
     private Button cancelButton = null;
-    private TakeToSee takeToSee;
+//    private TakeToSee takeToSee;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -34,27 +34,27 @@ public class CallActivity extends AppCompatActivity {
             }
         });
 
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                leaveChannel();
-            }
-        });
+//        cancelButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                leaveChannel();
+//            }
+//        });
 
     }
 
 
     private void initCall() {
-        takeToSee = new TakeToSee();
-        takeToSee.initAgoraEngine(this, getString(R.string.silversea_app_id));
+//        takeToSee = new TakeToSee();
+//        takeToSee.initAgoraEngine(this, getString(R.string.silversea_app_id));
     }
 
 
     private void joinChannel() {
-        takeToSee.joinChannel(getString(R.string.silversea_short_token), getString(R.string.silversea_channel_name), 10, "");
+//        takeToSee.joinChannel(getString(R.string.silversea_short_token), getString(R.string.silversea_channel_name), 10, "");
     }
 
-    private void leaveChannel() {
-        takeToSee.leaveChannle();
-    }
+//    private void leaveChannel() {
+//        takeToSee.leaveChannle();
+//    }
 }

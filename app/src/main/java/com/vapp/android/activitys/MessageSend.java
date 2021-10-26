@@ -12,7 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.vapp.android.R;
-import com.vapp.taketosee.AgoraMessage;
+//import com.vapp.taketosee.AgoraMessage;
 
 public class MessageSend extends AppCompatActivity {
 
@@ -34,7 +34,7 @@ public class MessageSend extends AppCompatActivity {
     private String channel_text = null;
     private String gourp_message_text = null;
     private String peer_message_text = null;
-    private AgoraMessage agoraMessage = null;
+//    private AgoraMessage agoraMessage = null;
 
 
     @Override
@@ -57,8 +57,8 @@ public class MessageSend extends AppCompatActivity {
         peer_message = findViewById(R.id.peer_message);
         peer_send = findViewById(R.id.peer_send_button);
 
-        agoraMessage = new AgoraMessage();
-        agoraMessage.initRTMMessageClient(this, getString(R.string.silversea_app_id_test));
+//        agoraMessage = new AgoraMessage();
+//        agoraMessage.initRTMMessageClient(this, getString(R.string.silversea_app_id_test));
 
 
         login_button.setOnClickListener(new View.OnClickListener() {
@@ -66,40 +66,40 @@ public class MessageSend extends AppCompatActivity {
             public void onClick(View v) {
                 String uid = login_input.getText().toString();
                 login_text = uid;
-                agoraMessage.loginRTMClientWithOutToken(uid);
+//                agoraMessage.loginRTMClientWithOutToken(uid);
             }
         });
 
-        logout_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                agoraMessage.logoutRtm();
-            }
-        });
+//        logout_button.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                agoraMessage.logoutRtm();
+//            }
+//        });
 
         join_channel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.i("MESSAGESEND", "test");
                 String channel_name = channel_input.getText().toString();
-                agoraMessage.createChannerListener();
+//                agoraMessage.createChannerListener();
                 Log.i("MESSAGESEND", channel_name);
-                agoraMessage.joinChannel(channel_name);
+//                agoraMessage.joinChannel(channel_name);
             }
         });
 
-        leave_channel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                agoraMessage.leaveChannel();
-            }
-        });
+//        leave_channel.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                agoraMessage.leaveChannel();
+//            }
+//        });
         
         group_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String channel_text = group_message.getText().toString();
-                agoraMessage.sendChannelMessage(channel_text);
+//                agoraMessage.sendChannelMessage(channel_text);
             }
         });
 
@@ -107,7 +107,7 @@ public class MessageSend extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String peer_text = peer_message.getText().toString();
-                agoraMessage.sendPeerMessage(peer_text, "userB");
+//                agoraMessage.sendPeerMessage(peer_text, "userB");
             }
         });
     }
