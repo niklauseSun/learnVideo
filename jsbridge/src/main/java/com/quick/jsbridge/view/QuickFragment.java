@@ -58,7 +58,7 @@ public class QuickFragment extends FrmBaseFragment implements IQuickFragment {
     /**
      * H5加载进度条
      */
-//    private ProgressBar pb;
+    private ProgressBar pb;
 
     public QuickFragment() {
     }
@@ -88,7 +88,7 @@ public class QuickFragment extends FrmBaseFragment implements IQuickFragment {
      * 初始化布局控件
      */
     protected void initView() {
-//        pb = (ProgressBar) findViewById(R.id.pb);
+        pb = (ProgressBar) findViewById(R.id.pb);
         wv = (QuickWebView) findViewById(R.id.wv);
 
         //初始化控制器
@@ -133,10 +133,10 @@ public class QuickFragment extends FrmBaseFragment implements IQuickFragment {
         return bean;
     }
 
-//    @Override
-//    public ProgressBar getProgressBar() {
-//        return pb;
-//    }
+    @Override
+    public ProgressBar getProgressBar() {
+        return pb;
+    }
 
     @Override
     public QuickFragment getQuickFragment() {

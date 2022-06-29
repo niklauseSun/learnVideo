@@ -1,4 +1,4 @@
-package com.quick.jsbridge.takeToSee;
+package com.quick.jsbridge.util;
 
 import android.util.Log;
 

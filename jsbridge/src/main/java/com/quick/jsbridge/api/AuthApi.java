@@ -1,5 +1,7 @@
 package com.quick.jsbridge.api;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.webkit.WebView;
 
 
@@ -37,8 +39,21 @@ public class AuthApi implements IBridgeImpl {
      */
     public static void getToken(IQuickFragment webLoader, WebView wv, JSONObject param, Callback callback) {
         Map<String, Object> map = new HashMap<>();
-        map.put("access_token", "test-token-quickhybrid");
+
+        SharedPreferences sharedPreferences= webLoader.getPageControl().getActivity().getSharedPreferences("data",Context.MODE_PRIVATE);;
+
+        String token = sharedPreferences.getString("token", "");
+        map.put("access_token", token);
         callback.applySuccess(map);
+    }
+
+    public static void setToken(IQuickFragment webLoader, WebView wv, JSONObject param, Callback callback) {
+        String token = param.optString("token");
+
+        SharedPreferences sharedPreferences= webLoader.getPageControl().getActivity().getSharedPreferences("data",Context.MODE_PRIVATE);;
+        SharedPreferences.Editor edit = sharedPreferences.edit();
+        edit.putString("token", token);
+        edit.commit();
     }
 
     /**

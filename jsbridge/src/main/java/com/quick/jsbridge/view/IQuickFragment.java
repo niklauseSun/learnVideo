@@ -45,7 +45,7 @@ public interface IQuickFragment {
      *
      * @return
      */
-//    ProgressBar getProgressBar();
+    ProgressBar getProgressBar();
 
     QuickFragment getQuickFragment();
 

@@ -15,19 +15,13 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.donkingliang.imageselector.utils.ImageSelector;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
 import com.quick.core.baseapp.baseactivity.FrmBaseActivity;
 import com.quick.jsbridge.bean.QuickBean;
-import com.quick.jsbridge.view.QuickFragment;
 import com.quick.jsbridge.view.QuickWebLoader;
-import com.vapp.android.activitys.CallActivity;
-import com.vapp.android.activitys.MessageSend;
-
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -65,17 +59,10 @@ public class MainActivity extends FrmBaseActivity implements EasyPermissions.Per
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        SharedPreferences sharedPreferences= getSharedPreferences("data", Context .MODE_PRIVATE);
-        String url = sharedPreferences.getString("baseReqUrl","https://m.mspace.com.sg/mobile/");
-
-//        nomalInit("https://b.ujbook.com/");
-//        requestBaseUrl();
-        testInit();
+        nomalInit("https://student.traefik.99rongle.com/mobile/pages/client/login?version=1.0.0");
     }
 
     private void nomalInit(String url) {
-//        String url = "https://m.mspace.com.sg/mobile/";
         Intent mintent = new Intent(MainActivity.this, QuickWebLoader.class);
 
         QuickBean bean = new QuickBean(url);
@@ -156,38 +143,6 @@ public class MainActivity extends FrmBaseActivity implements EasyPermissions.Per
                 startActivity(mintent);
             }
         });
-
-        callTest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent mintent = new Intent(MainActivity.this, CallActivity.class);
-
-                startActivity(mintent);
-            }
-        });
-
-        goToMessageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent mintent = new Intent(MainActivity.this, MessageSend.class);
-
-                startActivity(mintent);
-            }
-        });
-
-        selectImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                //单选
-                ImageSelector.builder()
-                        .useCamera(true) // 设置是否使用拍照
-                        .setSingle(true)  //设置是否单选
-                        .canPreview(true) //是否可以预览图片，默认为true
-                        .start(getActivity(), ImageSelector.RESULT_CODE); // 打开相册
-
-            }
-        });
     }
 
 
@@ -245,9 +200,6 @@ public class MainActivity extends FrmBaseActivity implements EasyPermissions.Per
         QuickBean bean = new QuickBean(url);
         mintent.putExtra("bean", bean);
         startActivity(mintent);
-//        Intent starter = new Intent(context, VWebView.class);
-//        starter.putExtra("loadUrl", url);
-//        startActivity(starter);
     }
 
     private static String pattern = "^([hH][tT]{2}[pP]://|[hH][tT]{2}[pP][sS]://)(([A-Za-z0-9-~]+).)+([A-Za-z0-9-~\\/])+$";
@@ -288,21 +240,6 @@ public class MainActivity extends FrmBaseActivity implements EasyPermissions.Per
         String [] perms = {Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
         if (!EasyPermissions.hasPermissions(this, perms)) {
             EasyPermissions.requestPermissions(this, "扫描二维码需要打开相机和散光灯的权限", REQUEST_CODE_QRCODE_PERMISSIONS, perms);
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == ImageSelector.RESULT_CODE) {
-            //选择或预览图片回传值
-            ArrayList<String> photos = null;
-            if (data != null) {
-                photos = data.getStringArrayListExtra(ImageSelector.SELECT_RESULT);
-                Uri uri = Uri.parse(photos.get(0));
-                showImage.setImageURI(uri);
-            }
         }
     }
 

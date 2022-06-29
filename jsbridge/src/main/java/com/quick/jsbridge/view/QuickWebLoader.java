@@ -30,13 +30,9 @@ public class QuickWebLoader extends FrmBaseActivity {
         super.onCreate(savedInstanceState);
         //隐藏Activity的导航栏
         pageControl.getNbBar().hide();
-
         initQuickBean(savedInstanceState);
-
         setLayout(R.layout.quick_activity);
-
         addFragment(R.id.frgContent);
-
     }
 
     /**

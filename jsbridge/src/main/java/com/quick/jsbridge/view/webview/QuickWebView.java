@@ -8,7 +8,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ProgressBar;
 
-import quick.com.jsbridge.BuildConfig;
+import butterknife.BuildConfig;
 
 /**
  * Created by dailichun on 2017/12/6.

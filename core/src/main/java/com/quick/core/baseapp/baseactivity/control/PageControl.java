@@ -100,7 +100,7 @@ public class PageControl implements IPageControl {
         this.activity = activity;
         this.nbOnClick = nbOnClick;
         this.bundle = activity.getIntent().getExtras();
-        setOrientation();
+//        setOrientation();
     }
 
     public PageControl(android.app.Fragment fragment, INbControl.INbOnClick nbOnClick) {
@@ -109,13 +109,6 @@ public class PageControl implements IPageControl {
         this.nbOnClick = nbOnClick;
         this.bundle = fragment.getArguments();
     }
-
-//    public PageControl(android.support.v4.app.Fragment fragment, INbControl.INbOnClick nbOnClick) {
-//        this.v4Fragment = fragment;
-//        this.activity = fragment.getActivity();
-//        this.nbOnClick = nbOnClick;
-//        this.bundle = fragment.getArguments();
-//    }
 
     @Override
     public void setOrientation() {
